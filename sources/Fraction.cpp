@@ -1,67 +1,132 @@
-#include "Fraction.hpp"
+
 #include <algorithm>
+#include <iostream>
+#include "Fraction.hpp"
+
 using namespace ariel;
-////// + operator implementation ////////////////////
-// Fraction operator+(const Fraction &frac1, const Fraction &frac2)
-// {
-//     int nn = frac1.getNumerator() * frac2.getDenominator() +
-//              frac1.getDenominator() * frac2.getNumerator();
-//     int dd = frac1.getDenominator() * frac2.getDenominator();
-//     return Fraction(nn, dd);
-// }
+using namespace std;
+/////////////////////////// + operator implementation ////////////////////
 
-Fraction Fraction::operator+(const Fraction &frac) const
+Fraction ariel::operator+(const ariel::Fraction &frac2, const float &flo)
 {
-    Fraction result;
-    result.numerator = (numerator * frac.denominator) - (frac.numerator * denominator);
-    result.denominator = denominator * frac.denominator;
-    int gcd = std::__gcd(result.numerator, result.denominator);
-    result.numerator /= gcd;
-    result.denominator /= gcd;
-    return result;
+    return Fraction(flo + static_cast<float>(frac2.getNumerator()) / frac2.getDenominator());
 }
 
-Fraction operator+(const Fraction &frac2, const float &frac)
+Fraction ariel::operator+(const float &flo, const ariel::Fraction &frac2)
 {
-    return Fraction(frac + static_cast<float>(frac2.getNumerator()) / frac2.getDenominator());
+    return Fraction(flo + static_cast<float>(frac2.getNumerator()) / frac2.getDenominator());
 }
 
-Fraction operator+(const float &frac, const Fraction &frac2)
+/////////////////////////// - operator implementation ///////////////////
+
+Fraction ariel::operator-(const ariel::Fraction &frac2, const float &flo)
 {
-    return Fraction(frac + static_cast<float>(frac2.getNumerator()) / frac2.getDenominator());
+    return Fraction(flo - static_cast<float>(frac2.getNumerator()) / frac2.getDenominator());
 }
 
-////// - operator implementation ///////////////////
-// Fraction operator-(const Fraction &frac1, const Fraction &frac2)
-// {
-//     int nn = frac1.getNumerator() * frac2.getDenominator() -
-//              frac1.getDenominator() * frac2.getNumerator();
-//     int dd = frac1.getDenominator() * frac2.getDenominator();
-//     return Fraction(nn, dd);
-// }
-Fraction Fraction ::operator-(const Fraction &frac) const
+Fraction ariel::operator-(const float &flo, const ariel::Fraction &frac2)
 {
-    Fraction result;
-    result.numerator = (numerator * frac.denominator) - (frac.numerator * denominator);
-    result.denominator = denominator * frac.denominator;
-    int gcd = std::__gcd(result.numerator, result.denominator);
-    result.numerator /= gcd;
-    result.denominator /= gcd;
-    return result;
+    return Fraction(flo - static_cast<float>(frac2.getNumerator()) / frac2.getDenominator());
 }
 
-Fraction operator-(const Fraction &frac2, const float &frac)
+/////////////////////////// * operator implementation ////////////////////
+Fraction ariel::operator*(const ariel::Fraction &frac, const float &flo)
 {
-    return Fraction(frac - static_cast<float>(frac2.getNumerator()) / frac2.getDenominator());
+    float result = static_cast<float>(frac.getNumerator()) * flo / frac.getDenominator();
+    return Fraction(result);
+}
+Fraction ariel::operator*(const float &flo, const ariel::Fraction &frac2)
+{
+    float result = static_cast<float>(frac2.getNumerator()) * flo / frac2.getDenominator();
+    return Fraction(result);
+}
+/////////////////////////// * operator implementation ////////////////////
+Fraction ariel::operator/(const ariel::Fraction &frac2, const float &flo)
+{
+     float result = frac2.getNumerator() / frac2.getDenominator() / flo;
+    return Fraction(result);
+}
+Fraction ariel::operator/(const float &flo, const ariel::Fraction &frac2)
+{
+ float result = frac2.getNumerator() / frac2.getDenominator() / flo;
+    return Fraction(result);
 }
 
-Fraction operator-(const float &frac, const Fraction &frac2)
+
+/////////////////////////// IO operators implementation ////////////////////
+std::ostream &ariel::operator<<(std::ostream &ost, const ariel::Fraction &frac)
 {
-    return Fraction(frac - static_cast<float>(frac2.getNumerator()) / frac2.getDenominator());
+    ost << frac.getNumerator() << "/" << frac.getDenominator();
+    return ost;
 }
 
-////// * operator implementation ////////////////////
 
-Fraction Fraction::operator*(const Fraction &frac) const
+std::istream &ariel::operator>>(std::istream &ist, ariel::Fraction &frac)
 {
+    char delimiter;
+    int numerator, denominator;
+    ist >> numerator >> delimiter >> denominator;
+    frac = Fraction(numerator, denominator);
+    return ist;
+}
+
+/////////////////////////// Boolean operators implementation ////////////////////
+
+bool ariel::operator>(const ariel::Fraction &frac2, const float &flo)
+{
+    float f1 = static_cast<float>(frac2.getNumerator()) / frac2.getDenominator();
+    return f1 > flo;
+}
+bool ariel::operator>(const float &flo, const ariel::Fraction &frac2)
+{
+    float f1 = static_cast<float>(frac2.getNumerator()) / frac2.getDenominator();
+    return f1 < flo;
+}
+
+bool ariel::operator<(const ariel::Fraction &frac2, const float &flo)
+{
+    float f1 = static_cast<float>(frac2.getNumerator()) / frac2.getDenominator();
+    return f1 < flo;
+}
+bool ariel::operator<(const float &flo, const ariel::Fraction &frac2)
+{
+    float f1 = static_cast<float>(frac2.getNumerator()) / frac2.getDenominator();
+    return f1 > flo;
+}
+
+
+bool ariel::operator<=(const ariel::Fraction &frac1, const float &flo)
+{
+    float f = static_cast<float>(frac1.getNumerator()) / frac1.getDenominator();
+    return flo <= f;
+}
+
+bool ariel::operator<=(const float& flo, const ariel::Fraction& frac2)
+{
+    float f = static_cast<float>(frac2.getNumerator()) / frac2.getDenominator();
+    return flo <= f;
+}
+
+
+bool ariel::operator>=(const ariel::Fraction &frac1, const float &flo)
+{
+    float f = static_cast<float>(frac1.getNumerator()) / frac1.getDenominator();
+    return flo >= f;
+}
+bool ariel::operator>=(const float &flo, const ariel::Fraction &frac1)
+{
+    float f = static_cast<float>(frac1.getNumerator()) / frac1.getDenominator();
+    return flo >= f;
+}
+
+bool ariel::operator==(const ariel::Fraction &frac1, const float &flo)
+{
+    float f = static_cast<float>(frac1.getNumerator()) / frac1.getDenominator();
+    return flo == f;
+}
+
+bool ariel::operator==(const float &flo, const ariel::Fraction &frac1)
+{
+    float f = static_cast<float>(frac1.getNumerator()) / frac1.getDenominator();
+    return flo == f;
 }

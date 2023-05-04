@@ -10,20 +10,22 @@ using namespace std;
 
 TEST_CASE("Fraction object initialization & Getters return expected values") {
     Fraction a(1, 2);
-
+    cout<< "1"<< std::endl;
     // Check that the type of numerator and denominator are int
     CHECK(typeid(a.getNumerator()).name() == typeid(int).name());
     CHECK(typeid(a.getDenominator()).name() == typeid(int).name());
-
+cout<< "2"<< std::endl;
     // Check that the int constractor's fields are like expected. Also checks the getters
     CHECK(((a.getNumerator() == 1) && (a.getDenominator() == 2)));
-
+cout<< "3"<< std::endl;
     // Check that the float constractor's fields are like expected
-    Fraction b(0.3333);
+Fraction b(0.33333);
+    cout<< "4"<< std::endl;
     CHECK(((b.getNumerator() == 333) && (b.getDenominator() == 1000)));
 
     // Check that a Fraction can't be created if denominator is 0
     CHECK_THROWS(Fraction(1,0));
+    cout<< "5"<< std::endl;
 }
 
 TEST_CASE("Fraction addition test") {
