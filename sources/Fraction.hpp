@@ -29,40 +29,54 @@ namespace ariel
                 numerator += static_cast<int>(static_cast<float>(whole) * static_cast<float>(denominator));
 
             }
-            // Simplify the fraction
-            simplify();
+            
             // Assign the simplified fraction to the object's member variables
             this->numerator = numerator;
             this->denominator = denominator;
+            // Simplify the fraction
+            simplify();
         }
-        Fraction(int num, int denom) 
+        Fraction(const int num, int denom) :numerator(num), denominator(denom)
         {
-            if(denom == 0)
+             if (denom == 0) {
+                throw std::invalid_argument("Invalid argument: denominator cannot be zero.");
+            }
+            if(denominator < 0 && numerator >0) 
             {
-                throw std::runtime_error("Division by zero");
-            } 
-            
-            this->numerator = num;
-            this->denominator = denom;
+                denominator *= -1;
+                numerator *= -1;
+            }
+             simplify();
         }
 
+        
         int getNumerator() const
         {
-            return this->numerator;
+            return numerator;
         }
         int getDenominator() const
         {
-            return this->denominator;
+            return denominator;
         }
+        
+
 
         void simplify()
         {
+            if(numerator <0 && denominator <0)
+            {
+                numerator *= -1;
+                denominator *= -1;
+            }
             // Simplify the fraction by dividing the numerator and denominator by their GCD
-            int gcd = std::__gcd(numerator, denominator);
+            int gcd = std::__gcd(abs(numerator), abs(denominator));
+        
             numerator /= gcd;
             denominator /= gcd;
+           
         }
 
+        ///////////////////// ++ operator ///////////////////////////////////////
         Fraction &operator++()
         {
             numerator += denominator;
@@ -70,6 +84,7 @@ namespace ariel
             return *this;
         }
 
+        ///////////////////// ++ operator ///////////////////////////////////////
         Fraction operator++(int)
         {
             Fraction old = *this;
@@ -77,6 +92,7 @@ namespace ariel
             return old;
         }
 
+        ///////////////////// -- operator ///////////////////////////////////////
         Fraction &operator--()
         {
             numerator -= denominator;
@@ -90,54 +106,97 @@ namespace ariel
             return old;
         }
 
+        ///////////////////// - operator ///////////////////////////////////////
         Fraction operator-(const Fraction &frac) const
         {
-            Fraction result;
-            result.numerator = (numerator * frac.denominator) - (frac.numerator * denominator);
-            result.denominator = denominator * frac.denominator;
-            int gcd = std::__gcd(result.numerator, result.denominator);
-            result.numerator /= gcd;
-            result.denominator /= gcd;
+            int64_t new_num = static_cast<int64_t>(numerator) * static_cast<int64_t>(frac.denominator) - static_cast<int64_t>(frac.numerator)*static_cast<int64_t>(denominator);
+            int64_t new_denom = static_cast<int64_t>(denominator) * static_cast<int64_t>(frac.denominator);
+
+           if (new_num > std::numeric_limits<int>::max() || new_num < std::numeric_limits<int>::min()) {
+            throw std::overflow_error("Arithmetic overflow");
+            }
+
+            if (new_denom > std::numeric_limits<int>::max() || new_denom < std::numeric_limits<int>::min()) {
+                throw std::overflow_error("Arithmetic overflow");
+            }
+
+            Fraction result(static_cast<int>(new_num), static_cast<int>(new_denom));
+            result.simplify();
             return result;
         }
+
+
+        ///////////////////// + operator ///////////////////////////////////////
         Fraction operator+(const Fraction &frac) const
         {
-            Fraction result;
-            result.numerator = (numerator * frac.denominator) + (frac.numerator * denominator);
-            result.denominator = denominator * frac.denominator;
-            int gcd = std::__gcd(result.numerator, result.denominator);
-            result.numerator /= gcd;
-            result.denominator /= gcd;
+           
+            int64_t new_num = static_cast<int64_t>(numerator) * static_cast<int64_t>(frac.denominator)+ static_cast<int64_t>(frac.numerator)*static_cast<int64_t>(denominator);
+            int64_t new_denom = static_cast<int64_t>(denominator) * static_cast<int64_t>(frac.denominator);
+
+           if (new_num > std::numeric_limits<int>::max() || new_num < std::numeric_limits<int>::min()) {
+            throw std::overflow_error("Arithmetic overflow");
+            }
+
+            if (new_denom > std::numeric_limits<int>::max() || new_denom < std::numeric_limits<int>::min()) {
+                throw std::overflow_error("Arithmetic overflow");
+            }
+
+            Fraction result(static_cast<int>(new_num), static_cast<int>(new_denom));
+            result.simplify();
             return result;
         }
+    
+
+        ///////////////////// * operator ///////////////////////////////////////
         Fraction operator*(const Fraction &frac) const
+    {
+    int64_t new_num = static_cast<int64_t>(numerator) * static_cast<int64_t>(frac.numerator);
+    int64_t new_denom = static_cast<int64_t>(denominator) * static_cast<int64_t>(frac.denominator);
+
+    if (new_num > std::numeric_limits<int>::max() || new_num < std::numeric_limits<int>::min()) {
+        throw std::overflow_error("Arithmetic overflow");
+    }
+
+    if (new_denom > std::numeric_limits<int>::max() || new_denom < std::numeric_limits<int>::min()) {
+        throw std::overflow_error("Arithmetic overflow");
+    }
+
+    Fraction result(static_cast<int>(new_num), static_cast<int>(new_denom));
+    result.simplify();
+    return result;
+}
+
+
+        /////////////////////   / operator ///////////////////////////////////////
+  Fraction operator/(const Fraction &frac) const
         {
-            int new_num = numerator * frac.numerator;
-            int new_denom = denominator * frac.denominator;
-            Fraction result(new_num, new_denom);
-            return result;
+            if(frac.getNumerator() == 0)
+            {
+                throw std::runtime_error("Invalid argument: denominato");
+            }
+             int64_t new_num = static_cast<int64_t>(numerator) * static_cast<int64_t>(frac.denominator);
+            int64_t new_denom = static_cast<int64_t>(denominator) * static_cast<int64_t>(frac.numerator);
+           
+
+            if (new_num > std::numeric_limits<int>::max() || new_num < std::numeric_limits<int>::min()) {
+                throw std::overflow_error("Arithmetic overflow");
+            }
+
+            if (new_denom > std::numeric_limits<int>::max() || new_denom < std::numeric_limits<int>::min()) {
+                throw std::overflow_error("Arithmetic overflow");
+            }
+
+             Fraction result(static_cast<int>(new_num), static_cast<int>(new_denom));
+            result.simplify();
+             return result;
+            
         }
-        Fraction operator/(const Fraction &frac) const
-        {
-            int new_num = numerator * frac.denominator;
-            int new_denom = denominator * frac.numerator;
-            Fraction result(new_num, new_denom);
-            return result;
-        }
+      
 
-        // Fraction operator/(const float &flo) const
-        // {
-        //     float res = flo / static_cast<float>(numerator) / denominator;
-        //     return Fraction(res);
-        // }
-        // Fraction operator*(const float &flo) const
-        // {
 
-        //     float res = flo * static_cast<float>(numerator) / denominator;
-        //     return Fraction(res);
-        // }
 
-        bool operator>(const Fraction &frac) const
+        ///////////////////// > operator ///////////////////////////////////////
+bool operator>(const Fraction &frac) const
         {
             // First, find the least common multiple (LCM) of the denominators
             int lcm = std::lcm(denominator, frac.denominator);
@@ -147,7 +206,9 @@ namespace ariel
             // Finally, compare the numerators of the two fractions
             return this_num > frac_num;
         }
-        bool operator<(const Fraction &frac) const
+        
+        ///////////////////// < operator ///////////////////////////////////////
+bool operator<(const Fraction &frac) const
         {
             // First, find the least common multiple (LCM) of the denominators
             int lcm = std::lcm(denominator, frac.denominator);
@@ -158,20 +219,32 @@ namespace ariel
             return this_num < frac_num;
         }
 
-        bool operator==(const Fraction &frac) const
+        ///////////////////// == operator ///////////////////////////////////////
+bool operator==(const Fraction &frac) const
         {
+            if(numerator ==0 && frac.numerator == 0)
+            {
+                return true;
+            }
             return (numerator == frac.numerator) && (denominator == frac.denominator);
         }
 
-        bool operator<=(const Fraction &frac) const
+
+        ///////////////////// <= operator ///////////////////////////////////////
+bool operator<=(const Fraction &frac) const
         {
             return (*this < frac) || (*this == frac);
         }
-        bool operator>=(const Fraction &frac) const
+        
+        ///////////////////// >= operator ///////////////////////////////////////
+bool operator>=(const Fraction &frac) const
         {
             return (*this > frac) || (*this == frac);
         }
 
+
+
+        ///////////////////// friend functions ///////////////////////////////////////
         friend std::ostream &operator<<(std::ostream &ost, const Fraction &frac);
         friend std::istream &operator>>(std::istream &ist, Fraction &frac);
 

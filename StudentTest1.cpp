@@ -10,22 +10,17 @@ using namespace std;
 
 TEST_CASE("Fraction object initialization & Getters return expected values") {
     Fraction a(1, 2);
-    cout<< "1"<< std::endl;
     // Check that the type of numerator and denominator are int
     CHECK(typeid(a.getNumerator()).name() == typeid(int).name());
     CHECK(typeid(a.getDenominator()).name() == typeid(int).name());
-cout<< "2"<< std::endl;
     // Check that the int constractor's fields are like expected. Also checks the getters
     CHECK(((a.getNumerator() == 1) && (a.getDenominator() == 2)));
-cout<< "3"<< std::endl;
     // Check that the float constractor's fields are like expected
 Fraction b(0.33333);
-    cout<< "4"<< std::endl;
     CHECK(((b.getNumerator() == 333) && (b.getDenominator() == 1000)));
 
     // Check that a Fraction can't be created if denominator is 0
     CHECK_THROWS(Fraction(1,0));
-    cout<< "5"<< std::endl;
 }
 
 TEST_CASE("Fraction addition test") {
@@ -37,7 +32,9 @@ TEST_CASE("Fraction addition test") {
 
     Fraction d(1, 5);
     float e = 0.4; // Will be converted to 2/5
+    
     Fraction f = d + e; // 1/5 + 2/5 = 3/5
+    Fraction r(e);
     CHECK(((f.getNumerator() == 3) && (f.getDenominator() == 5)));
     CHECK(__gcd(f.getNumerator(), f.getDenominator()) == 1);
 
@@ -226,7 +223,7 @@ TEST_CASE("Output and Input Stream Operators") {
 
     istringstream is("5 6"); // Could also be "5,6" for ex
     istringstream bad_is("7");
-
+  
     // Test operator>>
     CHECK_NOTHROW(is >> b);
     CHECK(b.getNumerator() == 5);
